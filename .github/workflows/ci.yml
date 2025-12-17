@@ -1,0 +1,29 @@
+name: Pipeline Phenix
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Le robot récupère ton code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 2. Il se connecte à Docker Hub (grâce aux Secrets que tu viens de remettre)
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 3. Il construit et envoie l'image
+      - name: Build and Push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          # CHANGE LE PSEUDO CI-DESSOUS ! 👇
+          tags: youridevops/phenix-reborn:latest
